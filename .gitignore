@@ -19,6 +19,9 @@ dist-ssr
 .env.production
 .env.test
 
+# Mock API data
+data.mock.api.js
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
