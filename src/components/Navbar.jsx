@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useMovies } from "../context/MovieContext";
+import { useMovieStore } from "../store/zustand/movieStore";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -11,7 +11,7 @@ const Navbar = () => {
     selectedCategory,
     setSelectedCategory,
     getStats,
-  } = useMovies();
+  } = useMovieStore();
 
   const stats = getStats();
 

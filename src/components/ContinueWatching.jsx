@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { useMovies } from "../context/MovieContext";
+import { useMovieStore } from "../store/zustand/movieStore";
 import MovieCard from "./MovieCard";
 
 const ContinueWatching = () => {
-  const { getMoviesByCategory, selectedCategory, searchQuery } = useMovies();
+  const { getMoviesByCategory, selectedCategory, searchQuery } =
+    useMovieStore();
   const [slideIndex, setSlideIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Detect mobile screen
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
     checkMobile();
@@ -15,14 +15,12 @@ const ContinueWatching = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Only show continue watching section if we're viewing all categories or continue watching specifically
   if (selectedCategory !== "all" && selectedCategory !== "continueWatching") {
     return null;
   }
 
   const movies = getMoviesByCategory("continueWatching");
 
-  // Filter by search query if present
   const filteredMovies = searchQuery
     ? movies.filter(
         (movie) =>
@@ -35,7 +33,6 @@ const ContinueWatching = () => {
     return null;
   }
 
-  // Slider logic
   const maxVisible = isMobile ? 1 : 4;
   const totalSlides = Math.ceil(filteredMovies.length / maxVisible);
 
@@ -65,7 +62,6 @@ const ContinueWatching = () => {
         </h2>
       </div>
       <div className="relative">
-        {/* Tombol slider kiri */}
         {filteredMovies.length > maxVisible && (
           <button
             onClick={handlePrev}
@@ -77,7 +73,6 @@ const ContinueWatching = () => {
             &lt;
           </button>
         )}
-        {/* Card Movie */}
         <div
           className={`grid grid-cols-1 ${
             !isMobile ? "sm:grid-cols-2 md:grid-cols-4" : ""
@@ -93,7 +88,6 @@ const ContinueWatching = () => {
             </div>
           ))}
         </div>
-        {/* Tombol slider kanan */}
         {filteredMovies.length > maxVisible && (
           <button
             onClick={handleNext}

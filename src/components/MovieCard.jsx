@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMovies } from "../context/MovieContext";
+import { useMovieStore } from "../store/zustand/movieStore";
 
 const MovieCard = ({
   movie,
@@ -8,7 +8,7 @@ const MovieCard = ({
   imgClassName,
   hideProgressBar,
 }) => {
-  const { toggleWatchlist, rateMovie } = useMovies();
+  const { toggleWatchlist, rateMovie } = useMovieStore();
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 

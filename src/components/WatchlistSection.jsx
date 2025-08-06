@@ -1,17 +1,26 @@
-import { useMovies } from "../context/MovieContext";
+import { useState, useEffect } from "react";
+import { useMovieStore } from "../store/zustand/movieStore";
 import MovieCard from "./MovieCard";
 
 const WatchlistSection = () => {
-  const { getMoviesByCategory, selectedCategory, searchQuery } = useMovies();
+  const { getMoviesByCategory, selectedCategory, searchQuery } =
+    useMovieStore();
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Only show watchlist section when specifically selected
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   if (selectedCategory !== "watchlist") {
     return null;
   }
 
   const watchlistMovies = getMoviesByCategory("watchlist");
 
-  // Filter by search query if present
   const filteredMovies = searchQuery
     ? watchlistMovies.filter(
         (movie) =>
@@ -38,8 +47,24 @@ const WatchlistSection = () => {
     );
   }
 
+  const maxVisible = isMobile ? 2 : 4;
+  const totalSlides = Math.ceil(filteredMovies.length / maxVisible);
+
+  const handlePrev = () => {
+    setSlideIndex((prev) => (prev > 0 ? prev - 1 : prev));
+  };
+
+  const handleNext = () => {
+    setSlideIndex((prev) => (prev < totalSlides - 1 ? prev + 1 : prev));
+  };
+
+  const visibleMovies = filteredMovies.slice(
+    slideIndex * maxVisible,
+    slideIndex * maxVisible + maxVisible
+  );
+
   return (
-    <section className="px-4 py-6 sm:px-10 sm:py-10">
+    <section className="px-4 py-6 sm:px-10 sm:py-10 relative">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl sm:text-2xl font-bold">
           Daftar Saya
@@ -48,12 +73,40 @@ const WatchlistSection = () => {
           </span>
         </h2>
       </div>
-
-      {/* Grid film */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {filteredMovies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} showControls={true} />
-        ))}
+      <div className="relative">
+        {filteredMovies.length > maxVisible && (
+          <button
+            onClick={handlePrev}
+            disabled={slideIndex === 0}
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 px-3 py-2 rounded-full bg-gray-700 text-white shadow-lg hover:bg-gray-600 transition ${
+              slideIndex === 0 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            &lt;
+          </button>
+        )}
+        <div
+          className={`grid grid-cols-2 ${
+            !isMobile ? "sm:grid-cols-2 md:grid-cols-4" : ""
+          } gap-4`}
+        >
+          {visibleMovies.map((movie) => (
+            <MovieCard key={movie.id} movie={movie} showControls={true} />
+          ))}
+        </div>
+        {filteredMovies.length > maxVisible && (
+          <button
+            onClick={handleNext}
+            disabled={slideIndex === totalSlides - 1}
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 px-3 py-2 rounded-full bg-gray-700 text-white shadow-lg hover:bg-gray-600 transition ${
+              slideIndex === totalSlides - 1
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
+          >
+            &gt;
+          </button>
+        )}
       </div>
     </section>
   );

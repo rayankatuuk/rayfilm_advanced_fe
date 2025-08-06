@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { useMovies } from "../context/MovieContext";
+import { useMovieStore } from "../store/zustand/movieStore";
 import MovieCard from "./MovieCard";
 
 const TopRating = () => {
-  const { getMoviesByCategory, selectedCategory, searchQuery } = useMovies();
+  const { getMoviesByCategory, selectedCategory, searchQuery } =
+    useMovieStore();
   const [slideIndex, setSlideIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -32,7 +33,6 @@ const TopRating = () => {
     return null;
   }
 
-  // Slider logic
   const maxVisible = isMobile ? 2 : 5;
   const totalSlides = Math.ceil(filteredMovies.length / maxVisible);
 
@@ -62,7 +62,6 @@ const TopRating = () => {
         </h2>
       </div>
       <div className="relative">
-        {/* Tombol slider kiri */}
         {filteredMovies.length > maxVisible && (
           <button
             onClick={handlePrev}
@@ -74,7 +73,6 @@ const TopRating = () => {
             &lt;
           </button>
         )}
-        {/* Grid film */}
         <div
           className={`grid grid-cols-2 ${
             !isMobile ? "sm:grid-cols-3 lg:grid-cols-5" : ""
@@ -84,7 +82,6 @@ const TopRating = () => {
             <MovieCard key={movie.id || index} movie={movie} />
           ))}
         </div>
-        {/* Tombol slider kanan */}
         {filteredMovies.length > maxVisible && (
           <button
             onClick={handleNext}

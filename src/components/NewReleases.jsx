@@ -1,21 +1,18 @@
-import { useMovies } from "../context/MovieContext";
+import { useMovieStore } from "../store/zustand/movieStore";
 import MovieCard from "./MovieCard";
 
 const NewReleases = () => {
-  const { movies, selectedCategory, searchQuery } = useMovies();
+  const { movies, selectedCategory, searchQuery } = useMovieStore();
 
-  // Only show new releases section if we're viewing all categories
   if (selectedCategory !== "all") {
     return null;
   }
 
-  // For new releases, show latest movies (those added most recently)
   const newReleases = movies
-    .filter((movie) => movie.year >= 2022) // Recent movies
+    .filter((movie) => movie.year >= 2023)
     .sort((a, b) => b.year - a.year)
     .slice(0, 5);
 
-  // Filter by search query if present
   const filteredMovies = searchQuery
     ? newReleases.filter(
         (movie) =>
@@ -40,8 +37,6 @@ const NewReleases = () => {
           )}
         </h2>
       </div>
-
-      {/* Grid film */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 overflow-hidden">
         {filteredMovies.map((movie, index) => (
           <MovieCard

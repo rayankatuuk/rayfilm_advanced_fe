@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMovies } from "../context/MovieContext";
+import { useMovieStore } from "../store/zustand/movieStore";
 
 const MovieManager = () => {
   const {
@@ -8,18 +8,17 @@ const MovieManager = () => {
     deleteMovie,
     movies,
     getMovieById,
-  } = useMovies();
+  } = useMovieStore();
   const [showDemo, setShowDemo] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [movieTitle, setMovieTitle] = useState(""); // State untuk judul film
   const [updateTitle, setUpdateTitle] = useState(""); // State untuk input judul update
 
   const imageFiles = [
-    "Trending-1.png",
-    "Trending-2.png",
-    "Trending-3.png",
-    "Trending-4.png",
-    "Trending-5.png",
+    "dont look up.png",
+    "carusel 2.png",
+    "carusel 3.png",
+    "carusel 4.png",
   ];
 
   const getRandomImage = () => {

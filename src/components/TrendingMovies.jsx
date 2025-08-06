@@ -1,9 +1,16 @@
 import { useState, useEffect } from "react";
-import { useMovies } from "../context/MovieContext";
+import { useMovieStore } from "../store/zustand/movieStore";
 import MovieCard from "./MovieCard";
 
 const TrendingMovies = () => {
-  const { getMoviesByCategory, selectedCategory, searchQuery } = useMovies();
+  const {
+    getMoviesByCategory,
+    selectedCategory,
+    searchQuery,
+    error,
+    isLoading,
+    fetchMovies,
+  } = useMovieStore();
   const [slideIndex, setSlideIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -18,6 +25,30 @@ const TrendingMovies = () => {
     return null;
   }
 
+  // Error handling
+  if (error) {
+    return (
+      <section className="px-4 py-6 sm:px-10 sm:py-10 flex flex-col items-center justify-center min-h-[200px] text-white">
+        <div className="text-2xl mb-2">⚠️</div>
+        <div className="mb-2 font-bold">{error}</div>
+        <button
+          onClick={fetchMovies}
+          className="px-4 py-2 bg-red-600 rounded hover:bg-red-700"
+        >
+          Coba Lagi
+        </button>
+      </section>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <section className="px-4 py-6 sm:px-10 sm:py-10 flex items-center justify-center min-h-[200px] text-white">
+        Memuat data film...
+      </section>
+    );
+  }
+
   const movies = getMoviesByCategory("trending");
 
   const filteredMovies = searchQuery
@@ -29,10 +60,13 @@ const TrendingMovies = () => {
     : movies;
 
   if (filteredMovies.length === 0) {
-    return null;
+    return (
+      <section className="px-4 py-6 sm:px-10 sm:py-10 flex items-center justify-center min-h-[200px] text-white">
+        Tidak ada film trending yang tersedia.
+      </section>
+    );
   }
 
-  // Slider logic
   const maxVisible = isMobile ? 2 : 5;
   const totalSlides = Math.ceil(filteredMovies.length / maxVisible);
 
@@ -62,7 +96,6 @@ const TrendingMovies = () => {
         </h2>
       </div>
       <div className="relative">
-        {/* Tombol slider kiri */}
         {filteredMovies.length > maxVisible && (
           <button
             onClick={handlePrev}
@@ -74,7 +107,6 @@ const TrendingMovies = () => {
             &lt;
           </button>
         )}
-        {/* Grid film */}
         <div
           className={`grid grid-cols-2 ${
             !isMobile ? "sm:grid-cols-3 lg:grid-cols-5" : ""
@@ -84,7 +116,6 @@ const TrendingMovies = () => {
             <MovieCard key={movie.id || index} movie={movie} />
           ))}
         </div>
-        {/* Tombol slider kanan */}
         {filteredMovies.length > maxVisible && (
           <button
             onClick={handleNext}
