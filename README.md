@@ -15,3 +15,8 @@ ENV :
 
 VITE_REACT_APP_API_URL=https://68930e47c49d24bce8693965.mockapi.io/users
 VITE_REACT_APP_MOVIE_API_URL=https://68930e47c49d24bce8693965.mockapi.io/movies
+
+LOGIN :
+
+USERNAME : user1
+PASSWORD : pass123
