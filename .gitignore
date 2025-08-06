@@ -20,7 +20,7 @@ dist-ssr
 .env.test
 
 # Mock API data
-data.mock.api.js
+data.mockapi.js
 
 # Editor directories and files
 .vscode/*
